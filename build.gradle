@@ -52,7 +52,7 @@ task fromWikiToText() {
     doLast { 
         Wiki2Text w = new Wiki2Text(cur_area, "./data/text");    
     
-        w.extractLocale(new File("/Users/slemaguer/workspace/check_wikipedia_parsing/res.xml")); // FIXME: check
+        w.extractLocale(new File("$project.projectDir/res.xml")); // FIXME: check
     }
 }
 
@@ -114,5 +114,5 @@ task fromAcoustParamsToWav(dependsOn: fromTextToAcoustParams){
     }
 }
 
-task run(dependsOn:fromAcousticParamsToWav) {
+task run(dependsOn:fromAcoustParamsToWav) {
 }
