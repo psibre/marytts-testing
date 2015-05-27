@@ -114,7 +114,5 @@ task fromAcoustParamsToWav(dependsOn: fromTextToAcoustParams){
     }
 }
 
-
-task test_test {
-    def text_dir = "./data/text/$cur_area"
+task run(dependsOn:fromAcousticParamsToWav) {
 }
