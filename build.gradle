@@ -1,0 +1,120 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+
+buildscript {
+    def areas = ['de', 'en', 'fr', 'it', 'ru', 'sv', 'te', 'tr']    
+    def maryttsVersion='5.1.1'
+    repositories {
+        jcenter()
+        maven {
+           url 'https://oss.jfrog.org/artifactory/repo'
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'de.dfki.mary', name: 'marytts-runtime', version: maryttsVersion
+        areas.each { locale ->
+            classpath group: 'de.dfki.mary', name: "marytts-lang-$locale", version: maryttsVersion
+        }
+        classpath group: 'de.dfki.mary', name: 'voice-cmu-slt-hsmm', version: maryttsVersion
+    }
+}
+
+
+def areas = ['de', 'en', 'fr', 'it', 'ru', 'sv', 'te', 'tr']
+
+import marytts.LocalMaryInterface;
+import marytts.datatypes.MaryDataType;
+import marytts.util.data.audio.MaryAudioUtils;
+
+
+import javax.sound.sampled.AudioInputStream;
+
+/* XML Exporting */
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.OutputKeys;
+import java.io.StringWriter;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.dom.DOMSource;
+
+def mary = new LocalMaryInterface()
+
+def cur_area = "en"
+
+// FIXME: add downloaded + unzip task
+task fromWikiToText() {
+
+    
+    def text_dir = "./data/text"
+    outputs.files "$text_dir/$cur_area"
+    doLast { 
+        Wiki2Text w = new Wiki2Text(cur_area, "./data/text");    
+    
+        w.extractLocale(new File("/Users/slemaguer/workspace/check_wikipedia_parsing/res.xml")); // FIXME: check
+    }
+}
+
+
+task fromTextToAcoustParams(dependsOn: fromWikiToText) {
+    def text_dir = new File("./data/text/$cur_area")
+    inputs.files text_dir
+    
+    def acparam_dir = new File("./data/acoust_params/$cur_area")
+    outputs.files acparam_dir
+
+    doLast {
+        acparam_dir.mkdirs()
+        mary.setInputType("TEXT")
+        mary.setOutputType("ACOUSTPARAMS")
+        
+        text_dir.eachFile { file ->
+            def basename = file.name.replaceAll("\\.txt\$", "")
+            def text = (new File("$text_dir/${basename}.txt")).text
+            def d = mary.generateXML(text)
+        
+            // FIXME: find a better way to save the XML
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(d), new StreamResult(writer));
+            String output = writer.getBuffer().toString(); // #.replaceAll("\n|\r", "");
+            
+            (new File("$acparam_dir/${basename}.xml")).text = output
+        }
+        
+    }
+}
+
+task fromAcoustParamsToWav(dependsOn: fromTextToAcoustParams){
+    def acparam_dir = new File("./data/acoust_params/$cur_area")
+    inputs.files acparam_dir
+    def wav_dir = new File("./data/acoust_params/$cur_area")
+
+    doLast {
+        wav_dir.mkdirs()
+        // Actual fantasy synthesis
+        mary.setOutputType("ACOUSTPARAMS")
+        mary.setOutputType("AUDIO")
+
+        
+        acparam_dir.eachFile { file ->
+            def basename = file.name.replaceAll("\\.xml\$", "")
+            print("Synthesis $file.name ......")
+            System.out.flush()
+            def xml = file.text
+            AudioInputStream audio = mary.generateAudio(xml);
+            
+            // MaryAudioUtils.writeWavFile(MaryAudioUtils.getSamplesAsDoubleArray(audio),
+            //                             "$wav_dir/${basename}.wav",
+            //                             audio.getFormat());
+        }
+    }
+}
+
+
+task test_test {
+    def text_dir = "./data/text/$cur_area"
+}

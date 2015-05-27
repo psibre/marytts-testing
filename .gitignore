@@ -1,0 +1,9 @@
+# Gradle
+.gradle
+build
+
+# Tmp
+log
+data
+wikixmlj
+res.xml
