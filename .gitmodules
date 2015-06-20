@@ -1,0 +1,6 @@
+[submodule "reference-marytts"]
+	path = reference-marytts
+	url = https://github.com/marytts/marytts.git
+[submodule "bleeding-marytts"]
+	path = bleeding-marytts
+	url = https://github.com/marytts/marytts.git
