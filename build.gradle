@@ -1,0 +1,44 @@
+allprojects {
+    apply plugin: 'groovy'
+
+    repositories {
+        jcenter()
+    }
+}
+
+apply from: 'reference-marytts.gradle'
+apply from: 'bleeding-marytts.gradle'
+
+subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
+    proj.repositories {
+        ivy {
+            url project(":$proj.name-marytts").projectDir.path + '/lib/repo'
+            layout 'maven'
+        }
+    }
+
+    proj.dependencies {
+        compile localGroovy()
+        compile project(":$proj.name-marytts:marytts-languages:marytts-lang-$proj.parent.name")
+    }
+
+    proj.sourceSets {
+        main {
+            groovy {
+                srcDir "$rootDir/src/main/groovy"
+            }
+        }
+    }
+
+    proj.task('convertTextToAllophones') {
+        dependsOn proj.classes
+        doLast {
+            javaexec {
+                main 'Text2Allophones'
+                classpath proj.sourceSets.main.runtimeClasspath
+                args proj.parent.name
+                workingDir proj.buildDir
+            }
+        }
+    }
+}
