@@ -33,6 +33,19 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
         from proj.configurations.wikipedia
         into proj.wikiDir
     }
+
+    proj.task('extractPlainText') {
+        inputs.files proj.getWikipediaDump
+        outputs.files "${proj.wikiDir}/text"
+        doLast {
+            inputs.files.asFileTree.files.each { dumpFile ->
+                exec {
+                    commandLine = ['python', "$rootDir/wikiextractor/WikiExtractor.py", '--no-templates', dumpFile]
+                    workingDir proj.wikiDir
+                }
+            }
+        }
+    }
 }
 
 subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
