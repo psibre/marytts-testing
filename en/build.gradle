@@ -1,0 +1,7 @@
+dependencies {
+    wikipedia group: 'org.wikipedia', name: 'enwiki', version: '20150602', classifier: 'pages-articles1', ext: 'xml-p000000010p000010000.bz2'
+}
+
+getWikipediaDump {
+    rename ~/xml-[p\d]+.bz2/, 'xml.bz2'
+}

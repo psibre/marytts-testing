@@ -9,6 +9,32 @@ allprojects {
 apply from: 'reference-marytts.gradle'
 apply from: 'bleeding-marytts.gradle'
 
+subprojects.findAll { it.name.length() == 2 }.each { proj ->
+    proj.repositories {
+        ['http://wikipedia.c3sl.ufpr.br/', 'https://dumps.wikimedia.org/'].each { mirror ->
+            ivy {
+                url mirror
+                layout 'pattern', {
+                    artifact '[module]/[revision]/[module]-[revision]-[classifier].[ext]'
+                }
+            }
+        }
+    }
+
+    proj.configurations {
+        wikipedia
+    }
+
+    proj.ext {
+        wikiDir = file("$proj.buildDir/wikidump")
+    }
+
+    proj.task('getWikipediaDump', type: Copy) {
+        from proj.configurations.wikipedia
+        into proj.wikiDir
+    }
+}
+
 subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
     proj.repositories {
         ivy {

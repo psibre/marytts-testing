@@ -1,0 +1,3 @@
+dependencies {
+    wikipedia group: 'org.wikipedia', name: 'trwiki', version: '20150602', classifier: 'pages-articles', ext: 'xml.bz2'
+}
