@@ -36,7 +36,11 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
 
     proj.task('extractPlainText') {
         inputs.files proj.getWikipediaDump
-        outputs.files "${proj.wikiDir}/text"
+        def textFile = file("${proj.wikiDir}/text")
+        outputs.files textFile
+        doFirst {
+            textFile.delete()
+        }
         doLast {
             inputs.files.asFileTree.files.each { dumpFile ->
                 exec {
