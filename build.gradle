@@ -63,7 +63,11 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
                 def parser = new groovy.util.XmlSlurper()
                 def txtFile
                 def article = []
+                def articleCount = 0
                 dumpTextFile.eachLine { line ->
+                    if (articleCount >= 2000) {
+                        return
+                    }
                     switch (line.trim()) {
                         case { it.startsWith('<doc') }:
                             def doc = parser.parseText("$line</doc>")
@@ -74,6 +78,7 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
                         case '</doc>':
                             txtFile?.text = article.join('\n')
                             logger.info "Wrote $txtFile.name"
+                            articleCount++
                             break
                         default:
                             article << line
