@@ -98,6 +98,10 @@ subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
         }
     }
 
+    proj.ext {
+        xmlDir = file("$proj.buildDir/xml")
+    }
+
     proj.dependencies {
         compile localGroovy()
         compile project(":$proj.name-marytts:marytts-languages:marytts-lang-$proj.parent.name")
@@ -113,11 +117,16 @@ subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
 
     proj.task('convertTextToAllophones') {
         dependsOn proj.classes
+        inputs.files proj.parent.splitIntoArticles
+        outputs.dir proj.xmlDir
+        doFirst {
+            proj.xmlDir.mkdirs()
+        }
         doLast {
             javaexec {
                 main 'Text2Allophones'
                 classpath proj.sourceSets.main.runtimeClasspath
-                args proj.parent.name
+                args proj.parent.name, proj.parent.textDir, proj.xmlDir
                 workingDir proj.buildDir
             }
         }
