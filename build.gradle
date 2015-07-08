@@ -115,7 +115,7 @@ subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
         }
     }
 
-    proj.task('convertTextToAllophones') {
+    proj.task('convertTextToPhonemes') {
         dependsOn proj.classes
         inputs.files proj.parent.splitIntoArticles
         outputs.dir proj.xmlDir
@@ -124,7 +124,7 @@ subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
         }
         doLast {
             javaexec {
-                main 'Text2Allophones'
+                main 'Text2Phonemes'
                 classpath proj.sourceSets.main.runtimeClasspath
                 args proj.parent.name, proj.parent.textDir, proj.xmlDir
                 workingDir proj.buildDir

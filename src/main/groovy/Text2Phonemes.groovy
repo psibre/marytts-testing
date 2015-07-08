@@ -2,7 +2,7 @@ import marytts.LocalMaryInterface
 import marytts.Version
 import groovy.xml.XmlUtil
 
-class Text2Allophones {
+class Text2Phonemes {
 
     static void main(args) {
         def (localeStr, textDirPath, xmlDirPath) = args.take(3)
@@ -11,7 +11,7 @@ class Text2Allophones {
         def locale = Locale.forLanguageTag(localeStr == 'en' ? 'en-US' : localeStr)
         def mary = new LocalMaryInterface()
         mary.locale = locale
-        mary.outputType = 'ALLOPHONES'
+        mary.outputType = 'PHONEMES'
         println "MaryTTS ${Version.specificationVersion()}, ${mary.locale.displayLanguage}"
 
         // init input, output directories, parser
