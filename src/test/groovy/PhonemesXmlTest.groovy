@@ -29,6 +29,9 @@ class PhonemesXmlTest {
 
     @Test(dataProvider = 'xmlFiles')
     void compareXmlFiles(File expectedFile, File actualFile) {
+        [expectedFile, actualFile].each {
+            assert !it.text.startsWith('<stacktrace>')
+        }
         def diff = XMLUnit.compareXML(expectedFile.text, actualFile.text)
         def details = new DetailedDiff(diff)
         assert details.similar()
