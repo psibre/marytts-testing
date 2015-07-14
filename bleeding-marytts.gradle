@@ -8,6 +8,14 @@ project(':bleeding-marytts') { proj ->
         }
 
         version '5.2-SNAPSHOT'
+
+        sourceSets {
+            test {
+                java {
+                    exclude '**/*IT.java'
+                }
+            }
+        }
     }
 }
 
@@ -16,6 +24,8 @@ project(':bleeding-marytts:marytts-common') {
         compile 'commons-lang:commons-lang:2.6'
         compile 'commons-io:commons-io:2.0.1'
         compile 'log4j:log4j:1.2.16'
+        testCompile 'junit:junit:4.11'
+        testCompile 'org.testng:testng:6.8.13'
     }
 
     processResources {
@@ -31,6 +41,7 @@ project(':bleeding-marytts:marytts-languages') {
             compile project(':bleeding-marytts:marytts-common')
             compile project(':bleeding-marytts:marytts-runtime')
             compile project(':bleeding-marytts:marytts-signalproc')
+            testCompile 'junit:junit:4.11'
         }
     }
 }
@@ -38,6 +49,8 @@ project(':bleeding-marytts:marytts-languages') {
 project(':bleeding-marytts:marytts-languages:marytts-lang-fr') {
     dependencies {
         compile 'com.ibm.icu:icu4j:54.1.1'
+        testCompile 'xmlunit:xmlunit:1.6'
+        testCompile 'org.testng:testng:6.8.13'
     }
 }
 
@@ -55,6 +68,12 @@ project(':bleeding-marytts:marytts-runtime') {
         compile 'net.sf.trove4j:trove4j:2.0.2'
         compile 'org.apache.httpcomponents:httpcore-nio:4.1'
         compile 'org.apache.opennlp:opennlp-tools:1.5.3'
+        testCompile 'junit:junit:4.11'
+        testCompile 'org.easytesting:fest-assert:1.4'
+    }
+
+    test {
+        useTestNG()
     }
 }
 
@@ -62,5 +81,6 @@ project(':bleeding-marytts:marytts-signalproc') {
     dependencies {
         compile project(':bleeding-marytts:marytts-common')
         compile 'org.swinglabs:swing-layout:1.0.3'
+        testCompile 'junit:junit:4.11'
     }
 }
