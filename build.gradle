@@ -79,7 +79,7 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
                 def article = []
                 def articleCount = 0
                 dumpTextFile.eachLine { line ->
-                    if (articleCount >= 2000) {
+                    if (articleCount >= 100) {
                         return
                     }
                     switch (line.trim()) {
