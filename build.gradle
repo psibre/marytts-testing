@@ -25,6 +25,20 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
         wikipedia
     }
 
+    proj.sourceSets {
+        test {
+            groovy {
+                srcDir "$rootDir/src/test/groovy"
+            }
+        }
+    }
+
+    proj.dependencies {
+        testCompile localGroovy()
+        testCompile group: 'org.testng', name: 'testng', version: '6.8.13'
+        testCompile group: 'xmlunit', name: 'xmlunit', version: '1.6'
+    }
+
     proj.ext {
         wikiDir = file("$proj.buildDir/wikidump")
         textDir = file("$proj.buildDir/text")
@@ -86,6 +100,15 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
                     }
                 }
             }
+        }
+    }
+
+    proj.test {
+        useTestNG()
+        afterEvaluate {
+            systemProperty 'ReferenceXmlDir', project("$proj.name:reference").xmlDir
+            systemProperty 'BleedingXmlDir', project("$proj.name:bleeding").xmlDir
+            dependsOn proj.subprojects.collect { it.convertTextToPhonemes }
         }
     }
 }
