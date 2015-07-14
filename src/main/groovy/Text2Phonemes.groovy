@@ -1,6 +1,10 @@
 import marytts.LocalMaryInterface
 import marytts.Version
+
+import groovy.xml.MarkupBuilder
 import groovy.xml.XmlUtil
+
+import org.apache.commons.lang.exception.ExceptionUtils
 
 class Text2Phonemes {
 
@@ -22,11 +26,20 @@ class Text2Phonemes {
         // process
         textDir.eachFile { inputFile ->
             println "Synthesizing $inputFile.name"
-            def doc = mary.generateXML(inputFile.text)
-            def xmlStr = XmlUtil.serialize(doc.documentElement)
-            def xml = parser.parseText(xmlStr)
             def outputFile = new File(xmlDir, inputFile.name - 'txt' + 'xml')
-            outputFile.text = XmlUtil.serialize(xml)
+            try {
+                def doc = mary.generateXML(inputFile.text)
+                def xmlStr = XmlUtil.serialize(doc.documentElement)
+                def xml = parser.parseText(xmlStr)
+                outputFile.text = XmlUtil.serialize(xml)
+            } catch (Exception e) {
+                outputFile.withWriter { writer ->
+                    def xml = new MarkupBuilder(writer)
+                    xml.stacktrace {
+                        mkp.yield ExceptionUtils.getStackTrace(e)
+                    }
+                }
+            }
             println "Wrote $outputFile.name"
         }
     }
