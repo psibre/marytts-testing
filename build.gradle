@@ -108,7 +108,6 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
         afterEvaluate {
             systemProperty 'ReferenceXmlDir', project("$proj.name:reference").xmlDir
             systemProperty 'BleedingXmlDir', project("$proj.name:bleeding").xmlDir
-            dependsOn proj.subprojects.collect { it.convertTextToPhonemes }
         }
     }
 }
@@ -154,4 +153,8 @@ subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
             }
         }
     }
+}
+
+subprojects.findAll { it.name.length() == 2 }.each { proj ->
+    proj.test.dependsOn proj.subprojects.collect { it.convertTextToPhonemes }
 }
