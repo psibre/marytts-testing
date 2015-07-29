@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.apache.commons:commons-compress:1.9'
+    }
+}
+
 subprojects {
     apply plugin: 'groovy'
 
@@ -157,4 +166,30 @@ subprojects.findAll { it.name ==~ /(reference|bleeding)/ }.each { proj ->
 
 subprojects.findAll { it.name.length() == 2 }.each { proj ->
     proj.test.dependsOn proj.subprojects.collect { it.convertTextToPhonemes }
+}
+
+import org.apache.commons.compress.compressors.CompressorStreamFactory
+import javax.xml.parsers.SAXParserFactory
+
+project.task('extractArticles') {
+    dependsOn project('en').getWikipediaDump
+    doLast {
+        def fileIn = new File(project('en').wikiDir, 'enwiki-20150602-pages-articles1.xml.bz2')
+        def fin = new FileInputStream(fileIn)
+        def bis = new BufferedInputStream(fin)
+        def input = new CompressorStreamFactory().createCompressorInputStream(bis)
+        def br2 = new BufferedReader(new InputStreamReader(input))
+        def factory = SAXParserFactory.newInstance()
+        def saxParser = factory.newSAXParser()
+        def dump = new XmlSlurper(saxParser).parse(br2)
+        dump.page.eachWithIndex { page, p ->
+            if (p > 100) {
+                return
+            }
+            def title = "$page.title".replaceAll('/', '_')
+            def mwFile = new File(project('en').wikiDir, "${title}.mediawiki")
+            logger.lifecycle "Extracting to $mwFile"
+            mwFile.text = page.revision.text
+        }
+    }
 }
