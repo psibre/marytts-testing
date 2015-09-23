@@ -2,7 +2,7 @@
     include "$version-marytts:marytts-common"
     include "$version-marytts:marytts-runtime"
     include "$version-marytts:marytts-signalproc"
-    ['de', 'en', 'fr', 'it', 'ru', 'sv', 'te', 'tr'].each { lang ->
+    ['de', 'en', 'fr', 'it', 'lb', 'ru', 'sv', 'te', 'tr'].each { lang ->
         include ":$lang:$version"
         include ":$version-marytts:marytts-languages:marytts-lang-$lang"
     }
