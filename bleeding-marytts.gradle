@@ -61,6 +61,14 @@ project(':bleeding-marytts:marytts-languages:marytts-lang-fr') {
     }
 }
 
+project(':bleeding-marytts:marytts-languages:marytts-lang-lb') {
+    dependencies {
+        compile project(':bleeding-marytts:marytts-languages:marytts-lang-fr')
+        testCompile 'xmlunit:xmlunit:1.6'
+        testCompile 'org.testng:testng:6.8.13'
+    }
+}
+
 project(':bleeding-marytts:marytts-runtime') {
     dependencies {
         compile project(':bleeding-marytts:marytts-common')
