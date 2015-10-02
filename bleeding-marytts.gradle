@@ -95,6 +95,7 @@ project(':bleeding-marytts:marytts-signalproc') {
     dependencies {
         compile project(':bleeding-marytts:marytts-common')
         compile 'gov.nist.math:jama:1.0.3'
+        compile 'gov.nist.math:Jampack:1.0'
         compile 'org.swinglabs:swing-layout:1.0.3'
         testCompile 'junit:junit:4.11'
     }
