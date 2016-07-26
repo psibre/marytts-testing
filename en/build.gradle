@@ -1,5 +1,5 @@
 dependencies {
-    wikipedia group: 'org.wikipedia', name: 'enwiki', version: '20160720', classifier: 'pages-articles1', ext: 'xml-p000000010p000010000.bz2'
+    wikipedia group: 'org.wikipedia', name: 'enwiki', version: '20160720', classifier: 'pages-articles1', ext: 'xml-p000000010p000030302.bz2'
 }
 
 getWikipediaDump {
