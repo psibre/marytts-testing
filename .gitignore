@@ -5,3 +5,4 @@ build/
 # IDEA
 .idea/
 *.iml
+/.nb-gradle/
