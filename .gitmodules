@@ -1,7 +1,6 @@
 [submodule "reference-marytts"]
 	path = reference-marytts
-	url = https://github.com/attacomsian/marytts.git
+	url = https://github.com/marytts/marytts.git
 [submodule "bleeding-marytts"]
 	path = bleeding-marytts
-	url = https://github.com/attacomsian/marytts.git
-	branch = realised-acoustparams-testing
+	url = https://github.com/timobaumann/marytts.git
