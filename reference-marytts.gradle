@@ -7,7 +7,7 @@ project(':reference-marytts') { proj ->
             }
         }
 
-        version '5.1.1'
+        version '5.2-SNAPSHOT'
 
         sourceSets {
             test {
@@ -21,8 +21,11 @@ project(':reference-marytts') { proj ->
 
 project(':reference-marytts:marytts-common') {
     dependencies {
+        compile 'commons-lang:commons-lang:2.6'
         compile 'commons-io:commons-io:2.0.1'
         compile 'log4j:log4j:1.2.16'
+        compile 'org.codehaus.groovy:groovy-all:2.4.4'
+        compile group: 'org.hsqldb', name: 'hsqldb', version: '2.3.4'
         testCompile 'junit:junit:4.11'
         testCompile 'org.testng:testng:6.8.13'
     }
@@ -45,17 +48,38 @@ project(':reference-marytts:marytts-languages') {
     }
 }
 
+project(':reference-marytts:marytts-languages:marytts-lang-en') {
+    dependencies {
+        testCompile 'xmlunit:xmlunit:1.6'
+        testCompile 'org.testng:testng:6.8.13'
+    }
+}
+
+project(':reference-marytts:marytts-languages:marytts-lang-fr') {
+    dependencies {
+        testCompile 'xmlunit:xmlunit:1.6'
+        testCompile 'org.testng:testng:6.8.13'
+    }
+}
+
+project(':reference-marytts:marytts-languages:marytts-lang-lb') {
+    dependencies {
+        compile project(':reference-marytts:marytts-languages:marytts-lang-fr')
+        testCompile 'xmlunit:xmlunit:1.6'
+        testCompile 'org.testng:testng:6.8.13'
+    }
+}
+
 project(':reference-marytts:marytts-runtime') {
     dependencies {
         compile project(':reference-marytts:marytts-common')
         compile project(':reference-marytts:marytts-signalproc')
+        compile 'com.google.guava:guava:14.0.1'
+        compile 'com.ibm.icu:icu4j:54.1.1'
+        compile 'com.twmacinta:fast-md5:2.7.1'
         compile 'commons-collections:commons-collections:3.2.1'
-        compile 'commons-lang:commons-lang:2.6'
         compile 'de.dfki.lt.jtok:jtok-core:1.9.1'
         compile 'de.dfki.mary:emotionml-checker-java:1.1'
-        compile 'de.dfki.mary:freetts:1.0'
-        compile 'de.dfki.mary:freetts-de:1.0'
-        compile 'de.dfki.mary:freetts-en_us:1.0'
         compile 'net.sf.trove4j:trove4j:2.0.2'
         compile 'org.apache.httpcomponents:httpcore-nio:4.1'
         compile 'org.apache.opennlp:opennlp-tools:1.5.3'
@@ -71,6 +95,8 @@ project(':reference-marytts:marytts-runtime') {
 project(':reference-marytts:marytts-signalproc') {
     dependencies {
         compile project(':reference-marytts:marytts-common')
+        compile 'gov.nist.math:jama:1.0.3'
+        compile 'gov.nist.math:Jampack:1.0'
         compile 'org.swinglabs:swing-layout:1.0.3'
         testCompile 'junit:junit:4.11'
     }

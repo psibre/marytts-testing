@@ -34,7 +34,7 @@ subprojects.findAll { it.name.length() == 2 }.each { proj ->
     }
 
     proj.dependencies {
-        testCompile localGroovy()
+        testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.4'
         testCompile group: 'org.testng', name: 'testng', version: '6.8.13'
         testCompile group: 'xmlunit', name: 'xmlunit', version: '1.6'
     }
